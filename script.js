@@ -35,6 +35,10 @@ function spinReels() {
     spinButton.disabled = true;
     resultDiv.textContent = "Girando...";
 
+    // Determinar se o jogador deve ganhar (20% de chance)
+    const shouldWin = Math.random() < 0.1;
+    const winningSymbol = shouldWin ? symbols[Math.floor(Math.random() * symbols.length)] : null;
+
     reels.forEach((reel, index) => {
         const reelInner = reel.querySelector(".reel-inner");
 
@@ -43,22 +47,30 @@ function spinReels() {
 
         reelInner.style.transition = `transform ${duration}s ease-out`;
 
-        // Posição aleatória de parada e deslocamento para baixo
-        const stopPosition = Math.floor(Math.random() * symbols.length); 
+        let stopPosition;
+
+        if (shouldWin) {
+            // Forçar a parada no símbolo vencedor
+            stopPosition = symbols.indexOf(winningSymbol);
+        } else {
+            // Posição aleatória se o jogador não for ganhar
+            stopPosition = Math.floor(Math.random() * symbols.length);
+        }
+
         const offset = stopPosition * 100; // Deslocamento para baixo
         reelInner.style.transform = `translateY(-${offset}px)`; // Gira para baixo (sentido negativo)
 
         // Garantir que a animação pare corretamente
         setTimeout(() => {
             if (index === reels.length - 1) {
-                showResult(); // Verifica o resultado ao final do último giro
+                showResult(winningSymbol); // Verifica o resultado ao final do último giro
             }
         }, duration * 1000);
     });
 }
 
 // Exibe o resultado
-function showResult() {
+function showResult(winningSymbol) {
     const finalSymbols = reels.map(reel => {
         const reelInner = reel.querySelector(".reel-inner");
         const transformValue = reelInner.style.transform;
@@ -67,9 +79,9 @@ function showResult() {
         return symbols[stopIndex < 0 ? stopIndex + symbols.length : stopIndex];
     });
 
-    const isWinning = new Set(finalSymbols).size === 1;
+    const isWinning = winningSymbol !== null;
     resultDiv.textContent = isWinning
-        ? `🎉 Você ganhou com ${finalSymbols[0]}!`
+        ? `🎉 Você ganhou com ${winningSymbol}!`
         : "Você perdeu! Tente novamente.";
 
     isSpinning = false;
