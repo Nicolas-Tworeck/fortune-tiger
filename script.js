@@ -16,8 +16,11 @@ function setupReels() {
         const reelInner = document.createElement("div");
         reelInner.classList.add("reel-inner");
 
+        // Aumentando o número de símbolos visíveis nas bobinas
+        const totalSymbolsToDisplay = symbols.length * 4; // Aqui aumentei a quantidade de símbolos
+
         // Adiciona símbolos suficientes para criar a ilusão de rotação contínua
-        for (let i = 0; i < symbols.length * 2; i++) {
+        for (let i = 0; i < totalSymbolsToDisplay; i++) {
             const symbolDiv = document.createElement("div");
             symbolDiv.classList.add("symbol");
             symbolDiv.textContent = symbols[i % symbols.length];
@@ -35,7 +38,7 @@ function spinReels() {
     spinButton.disabled = true;
     resultDiv.textContent = "Girando...";
 
-    // Determinar se o jogador deve ganhar (20% de chance)
+    // Determinar se o jogador deve ganhar 
     const shouldWin = Math.random() < 0.1;
     const winningSymbol = shouldWin ? symbols[Math.floor(Math.random() * symbols.length)] : null;
 
@@ -43,7 +46,7 @@ function spinReels() {
         const reelInner = reel.querySelector(".reel-inner");
 
         // Reduzimos o tempo de animação para tornar o giro mais rápido
-        const duration = 0.5 + 0.2 * index; // Tempo de animação mais rápido
+        const duration = 0.3 + 0.1 * index; // Tempo de animação reduzido para velocidade maior
 
         reelInner.style.transition = `transform ${duration}s ease-out`;
 
